@@ -1,4 +1,4 @@
-import {Navbar , Sidebar} from '@/components/module/index'
+import {Navbar , Sidebar} from '@/components/module'
 
 const LayoutHome = ({children} : {children : React.ReactNode}) => {
   return (

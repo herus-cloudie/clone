@@ -1,16 +1,17 @@
-import Image from "next/image";
-import Link from "next/link";
 import MobileNav from "./mobileNav";
+import HomeLogo from "./homeLogo";
+import { SignInButton, SignOutButton, SignedIn, UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
     <nav className="flex justify-between fixed z-50 w-full bg-dark-1 px-6 py-4 lg:px-10">
-      <Link className="flex justify-center items-start gap-1" href={'/'}>
-        <p className="font-extrabold text-[26px] max-sm:hidden">Yoom</p>
-        <Image width={32} height={32} className="max-sm:size-10" alt="main logo" src={'/icons/logo.svg'}/>
-      </Link>
+      <HomeLogo ClassName={'max-sm:hidden'}/>
       <div className="flex-between gap-5">
-        {/* clerk user managment */}
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+        <SignOutButton />
+        <SignInButton />
         <MobileNav />
       </div>
     </nav>

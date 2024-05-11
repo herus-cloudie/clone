@@ -8,4 +8,4 @@ const UpcomingPage = () => {
     )
   }
   
-  export default UpcomingPage
+  export default UpcomingPage;
