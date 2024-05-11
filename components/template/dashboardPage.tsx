@@ -11,7 +11,7 @@ const DashboardPage = () => {
     <section dir="ltr" className='flex size-full flex-col gap-10'>
       <div className="h-[300px] w-full rounded-[20px] bg-hero bg-cover">
         <div className="flex h-full flex-col justify-between max-lg:px-5 max-lg:py-8 lg:p-11">
-          <h2 className="glassmorphism max-w-[270px] rounded py-2 text-center text-base">Upcoming Meeting at : 2:15 PM</h2>
+          <div className="flex justify-end"><h2 dir="rtl" className="flex pr-4 glassmorphism min-w-[200px] max-w-[270px] rounded py-2 text-center text-base">جلسه پیش رو : ۱۲:۳۰ روز </h2></div>
           <div className="flex flex-col gap-2">
             <h1 className="text-5xl font-extrabold lg:text-7xl"> {TimeInIran} </h1>
             <div className="flex flex-row justify-start items-center mt-5">

@@ -10,8 +10,6 @@ const Navbar = () => {
         <SignedIn>
           <UserButton />
         </SignedIn>
-        <SignOutButton />
-        <SignInButton />
         <MobileNav />
       </div>
     </nav>

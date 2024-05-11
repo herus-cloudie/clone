@@ -93,7 +93,22 @@
   .cl-userButtonPopoverActionButton {
     color: white;
   }
-  
+  .cl-internal-i34cwg{
+    direction: ltr;
+  }
+  .cl-userButton-popover{
+    direction: ltr;
+  }
+  .cl-internal-4b57d1{
+    background-color: hsl(215.45deg 100% 52.11%);
+    color: white;
+  }
+  .cl-internal-1nn89fl {
+    color: white;
+  }
+  .cl-internal-1nn89fl{
+    color: white;
+  }
   /* =============================== */
   
   @layer utilities {
