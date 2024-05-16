@@ -1,22 +1,11 @@
 'use client'
 
-import { Dialog , DialogContent , DialogTrigger} from "@/components/ui/dialog"
+import { Dialog , DialogContent } from "@/components/ui/dialog"
 import { Button } from "../ui/button"
 
 import Image from "next/image"
 
-interface MeetingModalProps{
-    isOpen: boolean ,
-    onClose: () => void ,
-    title: string ,
-    handleClick?: () => void ,
-    buttonText?: string ,
-    image?: string ,
-    buttonIcon?: string ,
-    ClassName?: string ,
-    children?: React.ReactNode
-}
-
+import { MeetingModalProps } from "@/constants/types"
 
 const MeetingModal = ({isOpen , onClose , handleClick , buttonText , image , buttonIcon , title , ClassName , children} : MeetingModalProps) => {
   return (

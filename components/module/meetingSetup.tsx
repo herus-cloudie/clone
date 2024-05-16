@@ -18,13 +18,17 @@ const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolea
     if (!camera) call?.camera.disable();
     else call?.camera.enable();
     
-    if (!microphone)call?.microphone.enable();
-    else call?.microphone.disable();
+    if (!microphone)call?.microphone.disable();
+    else call?.microphone.enable();
 
   }, [microphone , camera , call?.camera, call?.microphone]);
 
   if(!call) return <Loader />;
 
+  const joining = () => {
+    call.join();
+    setIsSetupComplete(true);
+  }
   return (
     <div className="flex justify-center items-center flex-col gap-3 w-full h-screen">
       <h2 className="mb-3 font-semibold text-3xl">تنظیمات پیش‌فرض</h2>
@@ -34,20 +38,12 @@ const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolea
         <div className="flex items-center"><input onChange={() => setMicrophone(!microphone)} type="checkbox"/><label className="mr-2 font-medium">میکروفون</label></div>
         <div className="flex items-center"><input onChange={() => setCamera(!camera)} type="checkbox"/><label className="mr-2 font-medium">دوربین</label></div>
       </div>
-      <Button
-        className="rounded-md bg-green-500 px-4 py-2.5 text-xl mt-5"
-        onClick={() => {
-          call.join();
-          setIsSetupComplete(true);
-        }}
-      >
-        ملحق شدن
-      </Button>
+      <Button className="rounded-md bg-green-500 px-4 py-2.5 text-xl mt-5" onClick={joining}>ملحق شدن</Button>
     </div>
   )
 }
 
-export default MeetingSetup
+export default MeetingSetup;
 
 // 'use client';
 

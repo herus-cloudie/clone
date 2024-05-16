@@ -2,13 +2,7 @@
 
 import Image from "next/image"
 
-interface HomeCardProps{
-    title : string , 
-    ClassName : string , 
-    icon : string , 
-    description : string , 
-    handleClick : () => void 
-}
+import { HomeCardProps } from "@/constants/types"
 
 const HomeCard = ({title , ClassName , icon , description , handleClick } : HomeCardProps) => {
 

@@ -1,15 +1,19 @@
 'use client'
 
-import { cn } from "@/lib/utils";
-import { CallControls, CallParticipantsList, PaginatedGridLayout , SpeakerLayout } from "@stream-io/video-react-sdk";
 import { useRouter } from "next/navigation";
 import { useState } from "react"
 
-type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
+import { cn } from "@/lib/utils";
+
+import {CallControls, CallParticipantsList, PaginatedGridLayout , SpeakerLayout } from "@stream-io/video-react-sdk";
+
+import ListOfLayout from "./listOfLayout";
+
+import { CallLayoutType } from "@/constants/types";
 
 const MeetingRoom = () => {
 
-  const [layout, setLayout] = useState<CallLayoutType>('speaker-left')
+  const [layout, setLayout] = useState<CallLayoutType>('grid')
   const [showParticipants, setShowParticipants] = useState(false);
 
   const router = useRouter();
@@ -27,7 +31,7 @@ const MeetingRoom = () => {
 
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4">
-      <div className="relative flex size-full items-center justify-center ">
+      <div className="relative flex flex-row-reverse size-full items-center justify-center ">
         <div className="flex size-full max-w-[1000px] items-center">
           <CallLayout />
         </div>
@@ -37,6 +41,8 @@ const MeetingRoom = () => {
       </div>
       <div dir="ltr" className="fixed bottom-0 flex w-full items-center justify-center gap-5">
         <CallControls onLeave={() => router.push(`/dashboard`)} />
+        <ListOfLayout setLayout={setLayout} showParticipants={showParticipants} setShowParticipants={setShowParticipants}/>
+
       </div>
 
     </section>
