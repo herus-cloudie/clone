@@ -17,7 +17,7 @@ const MeetingModal = ({isOpen , onClose , handleClick , buttonText , image , but
                         <Image height={72} width={72} alt="meeting modal" src={image}/>
                     </div>
                 )}
-                <h1 className={`${ClassName} text-3xl font-bold leading-[42px]`}>{title}</h1>
+                <h1 className={`${ClassName} text-center text-2xl sm:text-3xl font-bold leading-[42px]`}>{title}</h1>
                 {children}
                 <Button onClick={handleClick} className="bg-blue-1 focus-visible:ring-0 focus-visible:ring-offset-0">
                     {buttonIcon && (<Image height={13} width={13} alt="buttonIcon" src={buttonIcon}/>)} &nbsp;

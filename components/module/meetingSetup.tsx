@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-import { DeviceSettings, VideoPreview, useCall } from "@stream-io/video-react-sdk";
+import { DeviceSettings , useCallStateHooks ,  VideoPreview, useCall } from "@stream-io/video-react-sdk";
 import { Button } from "../ui/button";
 
 import Loader from "./loader";
@@ -13,7 +13,9 @@ const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolea
   const [camera , setCamera] = useState(false);
 
   const call = useCall();
-
+  const {useCallCallingState , useCallCreatedBy} =  useCallStateHooks();
+  let callingState = useCallCallingState()
+  console.log(callingState)
   useEffect(() => {
     if (!camera) call?.camera.disable();
     else call?.camera.enable();
