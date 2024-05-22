@@ -24,8 +24,8 @@ interface MeetingModalProps{
     ClassName?: string ,
     children?: React.ReactNode
 }
+type MeetingStateType = 'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting'
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
 
-
-export type {HomeCardProps , MeetingModalProps , ListOfLayoutProps , CallLayoutType}
+export type {HomeCardProps , MeetingModalProps , ListOfLayoutProps , CallLayoutType , MeetingStateType }

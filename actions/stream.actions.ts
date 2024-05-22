@@ -19,7 +19,6 @@ export const TokenProvider = async () => {
     const issuedAt = Math.floor(Date.now() / 1000) - 60;
 
     const Token = Client.createToken(User.id , expirationTime , issuedAt)
-    
     return Token;
 }
 

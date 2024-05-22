@@ -20,7 +20,7 @@ const ListOfLayout = ({setLayout , showParticipants , setShowParticipants} : Lis
         <DropdownMenuContent className="bg-dark-1 text-white">
             {
                 ['Grid' , 'Speaker-left', 'Speaker-right'].map(context => (
-                <DropdownMenuItem onClick={() => setLayout(context.toLowerCase() as CallLayoutType)} className="cursor-pointer">{context}</DropdownMenuItem>
+                <DropdownMenuItem key={context} onClick={() => setLayout(context.toLowerCase() as CallLayoutType)} className="cursor-pointer">{context}</DropdownMenuItem>
                 ))
             }
             <DropdownMenuSeparator className="border-dark-1"/>

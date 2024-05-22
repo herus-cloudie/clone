@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 import {CallControls, CallParticipantsList, PaginatedGridLayout , SpeakerLayout } from "@stream-io/video-react-sdk";
 
 import { CallLayoutType } from "@/constants/types";
-import {  EndCallBtn, ListOfLayout} from "@/components/module";
+
+import {EndCallBtn , ListOfLayout} from "@/components/module";
 
 const MeetingRoom = () => {
-
   const [layout, setLayout] = useState<CallLayoutType>('grid')
   const [showParticipants, setShowParticipants] = useState(false);
 
@@ -29,6 +29,7 @@ const MeetingRoom = () => {
     }
   }
 
+  
   const isPersonalRoom = !!searchParams.get('personal')
 
   return (
@@ -48,9 +49,9 @@ const MeetingRoom = () => {
           !isPersonalRoom ? <EndCallBtn /> : null 
         }
       </div>
-
     </section>
   )
 }
 
-export default MeetingRoom
+export default MeetingRoom;
+

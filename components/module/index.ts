@@ -10,6 +10,9 @@ import MeetingSetup from './meetingSetup'
 import MeetingRoom from './meetingRoom'
 import ListOfLayout from './listOfLayout'
 import EndCallBtn from './endCallBtn'
+import MeetingCard from './meetingCard'
+import ListOfCall from './listOfCall'
 
 export { Navbar , Sidebar , MobileNav , MeetingTypeList , HomeCard , HomeLogo , Loader ,
-     MeetingModal , MeetingSetup , MeetingRoom , ListOfLayout , EndCallBtn }
+     MeetingModal , MeetingSetup , MeetingRoom , ListOfLayout , EndCallBtn , ListOfCall ,
+     MeetingCard , }

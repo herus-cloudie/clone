@@ -9,7 +9,7 @@ import { Loader, MeetingRoom, MeetingSetup ,  } from "../module";
 import { useGetCallById } from "@/hooks/useGetCallById";
 
 const DynamicMeetingPage = ({id} : {id : string}) => {
-  const [isSetIsSetupComplete, setIsSetupComplete] = useState(false);
+  const [isSetupComplete, setIsSetupComplete] = useState(false);
   const {isLoaded} = useUser();
   const {call , isCallLoaded} = useGetCallById(id);
   
@@ -19,7 +19,7 @@ const DynamicMeetingPage = ({id} : {id : string}) => {
         <StreamCall call={call}>
           <StreamTheme>
             {
-              !isSetIsSetupComplete ? <MeetingSetup setIsSetupComplete={setIsSetupComplete}/> : <MeetingRoom />
+              !isSetupComplete ? <MeetingSetup setIsSetupComplete={setIsSetupComplete}/> : <MeetingRoom />
             }
           </StreamTheme>
         </StreamCall>

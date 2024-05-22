@@ -22,9 +22,8 @@ const EndCallBtn = () => {
        router.push('/dashboard')
     } 
 
-    return (
-        <Button className="bg-red-500" onClick={endCallForEveryOne}>End call for everyone</Button>
-    )
+    return <Button className="bg-red-500" onClick={endCallForEveryOne}>End call for everyone</Button>
+    
 }
 
-export default EndCallBtn
+export default EndCallBtn;

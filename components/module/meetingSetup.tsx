@@ -2,20 +2,17 @@
 
 import { useEffect, useState } from "react"
 
-import { DeviceSettings , useCallStateHooks ,  VideoPreview, useCall } from "@stream-io/video-react-sdk";
-import { Button } from "../ui/button";
+import { DeviceSettings ,  VideoPreview, useCall , useConnectedUser} from "@stream-io/video-react-sdk";
 
+import { Button } from "../ui/button";
 import Loader from "./loader";
 
 const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolean) => void}) => {
-
+  
   const [microphone , setMicrophone] = useState(false);
   const [camera , setCamera] = useState(false);
-
   const call = useCall();
-  const {useCallCallingState , useCallCreatedBy} =  useCallStateHooks();
-  let callingState = useCallCallingState()
-  console.log(callingState)
+
   useEffect(() => {
     if (!camera) call?.camera.disable();
     else call?.camera.enable();
@@ -27,7 +24,7 @@ const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolea
 
   if(!call) return <Loader />;
 
-  const joining = () => {
+  const joining = async () => {
     call.join();
     setIsSetupComplete(true);
   }
@@ -47,81 +44,3 @@ const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolea
 
 export default MeetingSetup;
 
-// 'use client';
-
-// import { useEffect, useState } from 'react';
-// import {
-//   DeviceSettings,
-//   VideoPreview,
-//   useCall,
-//   useCallStateHooks,
-// } from '@stream-io/video-react-sdk';
-
-// // import Alert from './Alert';
-// import { Button } from '../ui/button';
-// import Loader from './loader';
-
-// const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolean) => void}) => {
-//   // const { useCallEndedAt, useCallStartsAt } = useCallStateHooks();
-//   // const callStartsAt = useCallStartsAt();
-//   // const callEndedAt = useCallEndedAt();
-//   // const callTimeNotArrived = callStartsAt && new Date(callStartsAt) > new Date();
-//   // const callHasEnded = !!callEndedAt;
-
-//   const call = useCall();
-//   const [isMicCamToggled, setIsMicCamToggled] = useState(false);
-
-//   useEffect(() => {
-//     if (isMicCamToggled) {
-//       call?.camera.disable();
-//       call?.microphone.disable();
-//     } else {
-//       call?.camera.enable();
-//       call?.microphone.enable();
-//     }
-//   }, [isMicCamToggled, call?.camera, call?.microphone]);
-
-//   // if (callTimeNotArrived)
-//   //   return (
-//   //     <Alert
-//   //       title={`Your Meeting has not started yet. It is scheduled for ${callStartsAt.toLocaleString()}`}
-//   //     />
-//   //   );
-
-//   // if (callHasEnded)
-//   //   return (
-//   //     <Alert
-//   //       title="The call has been ended by the host"
-//   //       iconUrl="/icons/call-ended.svg"
-//   //     />
-//   //   );
-//   if(!call) return <Loader />;
-//   return (
-//     <div className="flex h-screen w-full flex-col items-center justify-center gap-3 text-white">
-//       <h1 className="text-center text-2xl font-bold">Setup</h1>
-//       <VideoPreview />
-//       <div className="flex h-16 items-center justify-center gap-3">
-//         <label className="flex items-center justify-center gap-2 font-medium">
-//           <input
-//             type="checkbox"
-//             checked={isMicCamToggled}
-//             onChange={(e) => setIsMicCamToggled(e.target.checked)}
-//           />
-//           Join with mic and camera off
-//         </label>
-//         <DeviceSettings />
-//       </div>
-//       <Button
-//         className="rounded-md bg-green-500 px-4 py-2.5"
-//         onClick={() => {
-//           call.join();
-//           setIsSetupComplete(true);
-//         }}
-//       >
-//         Join meeting
-//       </Button>
-//     </div>
-//   );
-// };
-
-// export default MeetingSetup;
