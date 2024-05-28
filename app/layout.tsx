@@ -38,7 +38,7 @@ export default function RootLayout({
       }
     }>   
       <html lang="en" dir="rtl">
-        <body className={` bg-dark-2`}>{children}</body>
+          <body className={` bg-dark-2`}>{children}</body>
       </html>
     </ClerkProvider>
   )

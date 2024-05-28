@@ -1,4 +1,5 @@
 import {Navbar , Sidebar} from '@/components/module'
+import { Toaster } from "@/components/ui/toaster"
 
 const LayoutHome = ({children} : {children : React.ReactNode}) => {
   return (
@@ -12,7 +13,7 @@ const LayoutHome = ({children} : {children : React.ReactNode}) => {
           </div>
         </section>
       </div>
-        
+      <Toaster />
     </main>
   )
 }

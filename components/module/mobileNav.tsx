@@ -24,7 +24,7 @@ const MobileNav = () => {
         <Image width={36} height={36} className="sm:hidden cursor-pointer" alt="hamburger menu" src={'/icons/hamburger.svg'}/>
       </SheetTrigger>
       <SheetContent className="bg-dark-2 border-none text-white">
-        <HomeLogo/>
+        <HomeLogo forMobileNav={true}/>
         <div className='flex flex-1 flex-col gap-6 sm:pt-20 pt-10'>
           {sidebarLinks.map(item => {
             const isActive = pathName == item.route;
@@ -35,7 +35,6 @@ const MobileNav = () => {
                     <p className={`font-semibold`}>{item.label}</p>
                   </Link>
                 </SheetClose>
-              
               )
           }
           )}

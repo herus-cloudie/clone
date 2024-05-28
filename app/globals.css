@@ -145,3 +145,40 @@
 body{
   font-family: 'normal-vazir'!important;
 }
+
+.friend-card {
+  width: 190px;
+  height: 210px;
+  border-radius: 15px;
+ }
+ 
+ .friend-card .friend-card-border-top {
+  width: 60%;
+  height: 3%;
+  margin: auto;
+  border-radius: 0px 0px 15px 15px;
+ }
+ 
+ .friend-card span {
+  text-align: center;
+  display: block;
+  padding-top: 10px;
+  font-size: 16px;
+ }
+ 
+ .friend-card .img {
+  margin: auto;
+  margin-top: 5px;
+ }
+ 
+ .friend-card button {
+  padding: 8px 25px;
+  display: block;
+  margin: auto;
+  border-radius: 8px;
+  border: none;
+  margin-top: 30px;
+  color: white;
+  font-weight: 600;
+ }
+ 

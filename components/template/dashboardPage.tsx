@@ -1,7 +1,27 @@
+'use client'
+
 import { DateInIran, LongDynamicTime, TimeInIran  } from "@/constants/time";
 import { MeetingTypeList } from "../module";
+import { useEffect } from "react";
+import { useConnectedUser } from "@stream-io/video-react-sdk";
 
 const DashboardPage = () => {
+  const connectedUser = useConnectedUser();
+
+  useEffect(() => {
+
+    const addUserFunction = async () => {
+      const seeStatus = await fetch('/api/saveUsers' , {
+        method : 'POST',
+        body : JSON.stringify(connectedUser),
+        headers : {'Content-Type': 'application/json'}
+      })
+      const result = await seeStatus.json();
+    }
+
+    if(connectedUser) addUserFunction() 
+  } , [connectedUser])
+  
   return (
     <section dir="ltr" className='flex size-full flex-col gap-10'>
       <div className="h-[300px] w-full rounded-[20px] bg-hero bg-cover">

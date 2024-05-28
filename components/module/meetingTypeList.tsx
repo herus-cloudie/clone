@@ -13,6 +13,7 @@ import ReactDatePicker from "react-datepicker";
 
 import { HomeCard , MeetingModal} from "./index";
 import { MeetingStateType } from "@/constants/types";
+import { useToast } from "../ui/use-toast";
 
 const MeetingTypeList = () => {
   const [meetingState, setMeetingState] = useState<MeetingStateType>();
@@ -28,6 +29,8 @@ const MeetingTypeList = () => {
   const {user} = useUser();
   const client = useStreamVideoClient();
   
+  const {toast} = useToast();
+  console.log()
   const createMeeting = async () => {
     if(!client || !user) return; 
     
@@ -49,10 +52,11 @@ const MeetingTypeList = () => {
       });
 
       setCallState(call)
+      toast({title : 'تماس ایجاد شد', description : 'تنظیمات اولیه رو انجام بدهید' , className : 'bg-dark-3'})
       if(meetingState == 'isInstantMeeting') router.push(`/meeting/${id}`)
 
     } catch (error) {
-      console.log(error)
+      toast({title : 'مشکلی پیش اومده!' , description : 'لطفا دوباره تلاش کنید' , className : 'bg-red-500'})
     }
   } 
 
@@ -103,7 +107,7 @@ const MeetingTypeList = () => {
       buttonText={"وارد شو"}
       handleClick={() => router.push(`/meeting/${values.link}`)}
       >
-        <Input  className="bg-dark-3 border-none focus-visible:ring-offset-0 focus-visible:ring-0" onChange={(e) => setValues({...values , link : e.target.value})} placeholder="آدرس را اینجا بنویسید"/>
+        <Input className="bg-dark-3 border-none focus-visible:ring-offset-0 focus-visible:ring-0" onChange={(e) => setValues({...values , link : e.target.value})} placeholder="آدرس را اینجا بنویسید"/>
       </MeetingModal>
 
       {

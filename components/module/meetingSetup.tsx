@@ -8,11 +8,13 @@ import { Button } from "../ui/button";
 import Loader from "./loader";
 
 const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolean) => void}) => {
-  
+
   const [microphone , setMicrophone] = useState(false);
   const [camera , setCamera] = useState(false);
-  const call = useCall();
 
+  const call = useCall();
+  const user = useConnectedUser();
+  
   useEffect(() => {
     if (!camera) call?.camera.disable();
     else call?.camera.enable();
@@ -25,6 +27,12 @@ const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolea
   if(!call) return <Loader />;
 
   const joining = async () => {
+     const saveCallsMember = await fetch('/api/saveCallsMember' , {
+      method : 'POST',
+      body : JSON.stringify({user , callId : call.id}),
+      headers : {'Content-Type': 'application/json'}
+    })
+    const Data = await saveCallsMember.json();
     call.join();
     setIsSetupComplete(true);
   }
@@ -44,12 +52,3 @@ const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolea
 
 export default MeetingSetup;
 
-    //const [members, setMembers] = useState([])
-    // const user = useConnectedUser();
-    //  const saveMember = await fetch('/api/saveMember' , {
-    //   method : 'POST',
-    //   body : JSON.stringify({user , callId : call.id}),
-    //   headers : {'Content-Type': 'application/json'}
-    // })
-    // const Data = await saveMember.json();
-    // console.log(Data , user)

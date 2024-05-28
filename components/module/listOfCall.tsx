@@ -37,12 +37,12 @@ const ListOfCall = ({type} : {type : 'previous' | 'upcoming' | 'recording'}) => 
   };
 
   const calls = getCalls();
-  
+
   return (
     <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
         {
           calls && calls.length > 0 
-          ? calls?.reverse().map((call : CallRecording | Call) => <MeetingCard key={(call as Call).id} call={call} type={type}/>)
+          ? calls?.map((call : CallRecording | Call) => <MeetingCard key={(call as Call).id} call={call} type={type}/>)
           : <NoCalls />
         }
     </div>

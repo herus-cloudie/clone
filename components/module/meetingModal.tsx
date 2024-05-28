@@ -26,7 +26,6 @@ const MeetingModal = ({isOpen , onClose , handleClick , buttonText , image , but
             </div> 
         </DialogContent>
     </Dialog>
-
   );
 }
 
