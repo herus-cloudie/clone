@@ -7,12 +7,14 @@ import { Call, CallRecording ,  useStreamVideoClient } from '@stream-io/video-re
 export const useGetCalls = () => {
   const { user } = useUser();
   const client = useStreamVideoClient();
+  
   const [calls, setCalls] = useState<Call[]>();
   const [recordingsCall, setRecordingsCall] = useState<CallRecording[]>();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsLoading(true)
+
     const loadCalls = async () => {
       if (!client || !user?.id) return;
       
@@ -25,7 +27,6 @@ export const useGetCalls = () => {
               { created_by_user_id: user.id },
               { members : { $in: [user.id] } },
             ],
-            
           },
         });
         
@@ -50,11 +51,17 @@ export const useGetCalls = () => {
   }, [client, user?.id]);
 
   const now = new Date();
-  
+
+  const upcomingCalls = calls?.filter(({ state: { startsAt } }: Call) => {
+    if (startsAt) {
+      const callStartTime = new Date(startsAt);
+      const thirtyMinutesAfterStart = new Date(callStartTime.getTime() + 30 * 60000); 
+      return now <= thirtyMinutesAfterStart;
+    }
+    return false;
+  });
+
   const endedCalls = calls?.filter(({ state: { startsAt, endedAt } }: Call) => (startsAt && new Date(startsAt) < now) || !!endedAt)
-
-  const upcomingCalls = calls?.filter(({ state: { startsAt } }: Call) => startsAt && new Date(startsAt) > now)
-
   
-  return { endedCalls, upcomingCalls, recordingsCall, isLoading  }
+  return { endedCalls, upcomingCalls, recordingsCall, isLoading }
 };

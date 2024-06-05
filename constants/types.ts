@@ -24,7 +24,7 @@ interface MeetingModalProps{
     ClassName?: string ,
     children?: React.ReactNode
 }
-type MeetingStateType = 'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting'
+type MeetingStateType = 'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | 'isInviting'
 type CallLayoutType = 'grid' | 'speaker-left' | 'speaker-right';
 
 

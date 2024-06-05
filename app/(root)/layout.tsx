@@ -1,15 +1,12 @@
-import { StreamClientProvider } from "@/providers/streamClientProvider";
+import { StreamClientProvider } from '@/providers/streamClientProvider';
+import { ReactNode } from 'react';
 
-const LayoutRoot = ({children} : {children : React.ReactNode}) => {
-
+const RootLayout = ({ children }: Readonly<{ children: ReactNode }>) => {
   return (
-    <StreamClientProvider>
-        <div className='text-white'>
-          {children}
-        </div>
-    </StreamClientProvider>  
+    <main>
+      <StreamClientProvider>{children}</StreamClientProvider>
+    </main>
+  );
+};
 
-  )
-}
-
-export default LayoutRoot;
+export default RootLayout;

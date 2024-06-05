@@ -1,16 +1,14 @@
 import "./globals.css";
 import '@stream-io/video-react-sdk/dist/css/styles.css';
 import 'react-datepicker/dist/react-datepicker.css'
-import type { Metadata } from "next";
 
 import { ClerkProvider } from '@clerk/nextjs'
 
-// const inter = Inter({ subsets: ["latin"] });
-// import { Inter } from "next/font/google";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "video call app",
-  description: "zoom clone application",
+  description: "Zoom clone application",
   icons:{
     icon: "/icons/logo.svg",
   }
@@ -28,17 +26,19 @@ export default function RootLayout({
             logoImageUrl : '/icons/yoom-logo.svg',
             socialButtonsVariant : 'iconButton'
           },
-        variables : {
-          colorText : '#fff',
-          colorPrimary : '#0E78F9',
-          colorBackground : '#1C1F2E',
-          colorInputBackground : '#252A41',
-          colorInputText : '#fff'
-        }
+          variables : {
+            colorText : '#fff',
+            colorPrimary : '#0E78F9',
+            colorBackground : '#1C1F2E',
+            colorInputBackground : '#252A41',
+            colorInputText : '#fff'
+          }
       }
     }>   
       <html lang="en" dir="rtl">
-          <body className={` bg-dark-2`}>{children}</body>
+          <body className={`bg-dark-2 relative text-white`}>
+              {children}
+          </body>
       </html>
     </ClerkProvider>
   )

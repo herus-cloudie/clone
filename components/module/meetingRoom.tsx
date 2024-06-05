@@ -1,22 +1,24 @@
 'use client'
 
-import { useRouter , useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 
 import { cn } from "@/lib/utils";
 
-import {CallControls, CallParticipantsList, PaginatedGridLayout , SpeakerLayout } from "@stream-io/video-react-sdk";
+import {CallControls, CallParticipantsList, PaginatedGridLayout , SpeakerLayout, useCall } from "@stream-io/video-react-sdk";
 
 import { CallLayoutType } from "@/constants/types";
 
-import {EndCallBtn , ListOfLayout} from "@/components/module";
+import {EndCallBtn , ListOfLayout, Loader} from "@/components/module";
 
 const MeetingRoom = () => {
   const [layout, setLayout] = useState<CallLayoutType>('grid')
   const [showParticipants, setShowParticipants] = useState(false);
 
-  const searchParams = useSearchParams(); 
   const router = useRouter();
+  const call = useCall()
+
+  if(!call) return <Loader />
 
   const CallLayout = () => {
     switch (layout) {
@@ -29,8 +31,7 @@ const MeetingRoom = () => {
     }
   }
 
-  
-  const isPersonalRoom = !!searchParams.get('personal')
+
 
   return (
     <section className="relative h-screen w-full overflow-hidden pt-4">
@@ -43,11 +44,9 @@ const MeetingRoom = () => {
         </div>
       </div>
       <div dir="ltr" className="fixed bottom-0 flex w-full items-center justify-center gap-5 flex-wrap mb-5 md:mb-0">
-        <CallControls onLeave={() => router.push(`/dashboard`)} />
+        <CallControls onLeave={() => router.push(`/`)} />
         <ListOfLayout setLayout={setLayout} showParticipants={showParticipants} setShowParticipants={setShowParticipants}/>
-        {
-          !isPersonalRoom ? <EndCallBtn /> : null 
-        }
+        <EndCallBtn /> 
       </div>
     </section>
   )

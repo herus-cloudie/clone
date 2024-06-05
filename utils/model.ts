@@ -1,4 +1,5 @@
 
+import { Call } from '@stream-io/video-react-sdk'
 import {Schema , model , models} from 'mongoose'
 
 
@@ -21,7 +22,8 @@ const AllUsersSchema = new Schema({
         type : Object
     },
     friends : Array,
-    requests : Array
+    requests : Array,
+    meeting : Array
 } ,  {timestamps : true})
 
 const AllUsers = models.AllUsers || model("AllUsers" , AllUsersSchema)

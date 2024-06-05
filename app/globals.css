@@ -147,8 +147,8 @@ body{
 }
 
 .friend-card {
-  width: 190px;
-  height: 210px;
+  width: 120px;
+  height: 130px;
   border-radius: 15px;
  }
  
@@ -168,7 +168,7 @@ body{
  
  .friend-card .img {
   margin: auto;
-  margin-top: 5px;
+  margin-top: 10px;
  }
  
  .friend-card button {
@@ -182,3 +182,7 @@ body{
   font-weight: 600;
  }
  
+ .str-video__call-panel{
+  background-color: #252a41;
+  border: none;
+ }

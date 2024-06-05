@@ -32,7 +32,6 @@ const MeetingSetup = ({setIsSetupComplete} : {setIsSetupComplete: (value: boolea
       body : JSON.stringify({user , callId : call.id}),
       headers : {'Content-Type': 'application/json'}
     })
-    const Data = await saveCallsMember.json();
     call.join();
     setIsSetupComplete(true);
   }

@@ -3,37 +3,31 @@ const sidebarLinks = [
     {
         label : 'صفحه اصلی',
         imageUrl : '/icons/Home.svg',
-        route : '/dashboard'
+        route : '/'
     } , 
     {
         label : 'پیش رو',
         imageUrl : '/icons/upcoming.svg',
-        route : '/dashboard/upcoming'
+        route : '/upcoming'
     },
     {
         label :  'گذشته',
         imageUrl : '/icons/previous.svg',
-        route : '/dashboard/previous'
+        route : '/previous'
     },
     {
         label :'ضبط شده',
         imageUrl : '/icons/Video.svg',
-        route : '/dashboard/recordings'
+        route : '/recordings'
     },
     {
-        label : 'دیدار خصوصی',
-        imageUrl : '/icons/add-personal.svg',
-        route : '/dashboard/personal-room'
+        label : 'دعوت ها',
+        imageUrl : '/icons/schedule.svg',
+        route : '/inviting'
     } 
 ]
 
-const avatarImages = [
-    '/images/avatar-1.jpeg',
-    '/images/avatar-2.jpeg',
-    '/images/avatar-3.png',
-    '/images/avatar-4.png',
-    '/images/avatar-5.png',
-];
+
   
 
-export {sidebarLinks , avatarImages , }
+export {sidebarLinks}

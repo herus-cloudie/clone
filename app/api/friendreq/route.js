@@ -13,7 +13,7 @@ export async function POST(req) {
 
     const destinationUser = await AllUsers.findOne({'user.id' : destination.id});
 
-    const existRequest = destinationUser.requests.find(requestOwner => requestOwner == origin.name);
+    const existRequest = destinationUser.requests?.find(requestOwner => requestOwner == origin.name);
 
     if(!existRequest) {
         destinationUser.requests.push(origin.name)

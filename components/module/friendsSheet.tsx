@@ -1,20 +1,22 @@
 'use client'
 
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { useConnectedUser } from "@stream-io/video-react-sdk"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useConnectedUser } from "@stream-io/video-react-sdk"
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Input } from "@/components/ui/input"
+import { useToast } from "@/components/ui/use-toast"
+
 import Loader from "./loader"
-import { Input } from "../ui/input"
-import { useToast } from "../ui/use-toast"
-import { Dialog, DialogContent } from "@radix-ui/react-dialog"
-import { useRouter } from "next/navigation"
 
 const FriendsSheet = () => {
   const router = useRouter();  
@@ -31,7 +33,7 @@ const FriendsSheet = () => {
 
   const { toast } = useToast();
 
-  let mainUser = allUser.find((item : { user: { id: string | undefined } }) => connectedUser?.id == item.user.id)
+  let mainUser = allUser?.find((item : { user: { id: string | undefined } }) => connectedUser?.id == item.user.id)
 
   useEffect(() => {
     const getUsersFunction = async () => {
@@ -39,7 +41,7 @@ const FriendsSheet = () => {
       const {allUser} = await getUsers.json();
       setAllUser(allUser);
 
-      let mainUser = allUser.find((item : { user: { id: string | undefined } }) => connectedUser?.id == item.user.id)
+      let mainUser = allUser?.find((item : { user: { id: string | undefined } }) => connectedUser?.id == item.user.id)
       setFriends(mainUser?.friends)
     }
     if(connectedUser) getUsersFunction()
@@ -52,7 +54,7 @@ const FriendsSheet = () => {
     const AllUserElseMainUser = allUser.filter(({user}) => user.name.toLowerCase().includes(targetValue.toLowerCase()) && user.name !== connectedUser?.name)
     const searchByText = AllUserElseMainUser.filter(({user}) => user.name != (friends as any[]).map(({name}) => name));
 
-    if(targetValue != '' && searchByText.length == 0) return setSearch('user not found')
+    if(targetValue != '' && searchByText?.length == 0) return setSearch('user not found')
     else if(targetValue == '') return setSearch('empty')
     else setSearch(searchByText)
   }
@@ -62,36 +64,37 @@ const FriendsSheet = () => {
       title : 'درخواست ارسال شد',
       className : 'bg-dark-3'
     })
-    const sendReq = await fetch('/api/friendreq' , {
+    const sendReq = await fetch('/api/friendReq' , {
       method : 'POST',
       body : JSON.stringify({origin : connectedUser , destination : user}),
       headers : {'Content-Type': 'application/json'}
     })
-    const result = await sendReq.json();
     setIfRequestSendedState(true)
   }
   
   const acceptOrRejectReq = async (respond : 'accept' | 'reject' , sender : string) => {
-    const sendRespond = await fetch('/api/friendreq' , {
+    const sendRespond = await fetch('/api/friendReq' , {
       method : 'PATCH',
       body : JSON.stringify({sender , receiver : connectedUser?.name , respond}),
       headers : {'Content-Type': 'application/json'}
     })
-    const result = await sendRespond.json();
+    
     mainUser?.requests.pop(sender);
     setSearch([])
     router.refresh();
+
     if(respond == 'accept') toast({title : 'درخواست با موفقیت قبول شد' , className : 'bg-green-500'})
       else toast({title : 'درخواست حذف گردید', className : 'bg-red-500'})
   }
 
+
   const DynamicRequests = () => {  
-    if(mainUser && mainUser.requests.length != 0 ){
+    if(mainUser && mainUser.requests?.length != 0 ){
       return mainUser?.requests.map((req : string) => (
         <div key={req} className="p-3 rounded-sm bg-dark-3 flex-row-reverse w-full flex justify-between items-center">
           <div>
             <div className="h-[60px]">
-              <Image width={512} height={512} alt="profile" src={allUser.find(({user}) => user.name == req).user.image} className="rounded-full object-cover w-full h-4/5 relative -top-5 -left-5"/>
+              <Image width={512} height={512} alt="profile" src={allUser?.find(({user}) => user.name == req).user.image} className="rounded-full object-cover w-full h-4/5 relative -top-5 -left-5"/>
             </div>
             <p className="text-xl -mt-5">{req}</p>
           </div>
@@ -130,16 +133,14 @@ const FriendsSheet = () => {
                           <div className="flex flex-col gap-4 items-center justify-center">
                             {
                               friends && friends.length != 0
-                              ? friends?.map(({name , image } : {name : string , image : string}) => (
-                                <div className="friend-card bg-dark-3">
+                              ? friends?.map(({name , image , id} : {name : string , image : string , id : string}) => (
+                                <div key={id} className="friend-card bg-dark-3">
                                   <div className="friend-card-border-top">
                                   </div>
                                   <div className="img max-w-[60px] max-h-[80px]">
                                     <Image alt="profile" width={70} height={70} className="rounded-full object-contain" src={image}/>
                                   </div>
                                   <span>{name}</span>
-                                  <button className="bg-dark-4"> جزییات
-                                  </button>
                                 </div>
                               ))
                               : <div className="h-32 w-full flex justify-center items-center"><p className="font-2xl">هنوز پارتنری ندارید.</p></div> 
@@ -152,14 +153,14 @@ const FriendsSheet = () => {
                         </TabsContent>
                         <TabsContent value="search">
                           <div className="my-7">
-                            <Input value={searchValue} disabled={allUser.length == 0} dir="ltr" className="bg-dark-3 border-none focus-visible:ring-offset-0 focus-visible:ring-0 rounded-lg" onChange={changeHandler} placeholder="Search user ..." />
+                            <Input value={searchValue} disabled={allUser?.length == 0} dir="ltr" className="bg-dark-3 border-none focus-visible:ring-offset-0 focus-visible:ring-0 rounded-lg" onChange={changeHandler} placeholder="Search user ..." />
                           </div>
                           {
                             search && search != 'user not found' && search != 'empty' && search?.length != 0 ?
                               search?.map(({user, requests}) => {
                                 const {name , id , image} = user;
-                                let ifRequestSended = requests.find((name : string) => name == connectedUser?.name)
-                                const ifDestinationUserSendedReqAlready = mainUser.requests.find((req : string) => req == name)
+                                let ifRequestSended = requests?.find((name : string) => name == connectedUser?.name)
+                                const ifDestinationUserSendedReqAlready = mainUser.requests?.find((req : string) => req == name)
 
                                 return (
                                   <div key={id} className="p-3 rounded-sm bg-dark-3 flex-row-reverse w-full flex justify-between items-center">
@@ -204,6 +205,3 @@ const FriendsSheet = () => {
   )
 }
 export default FriendsSheet;
-
-
-
