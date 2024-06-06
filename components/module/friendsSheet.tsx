@@ -41,7 +41,7 @@ const FriendsSheet = () => {
       const {allUser} = await getUsers.json();
       setAllUser(allUser);
 
-      let mainUser = allUser?.find((item : { user: { id: string | undefined } }) => connectedUser?.id == item.user.id)
+      let mainUser = allUser?.find(({user : {id}} : {user : {id : string}} ) => connectedUser?.id == id)
       setFriends(mainUser?.friends)
     }
     if(connectedUser) getUsersFunction()
