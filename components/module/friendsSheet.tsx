@@ -90,7 +90,7 @@ const FriendsSheet = () => {
 
   const DynamicRequests = () => {  
     if(mainUser && mainUser.requests?.length != 0 ){
-      return mainUser?.requests.map((req : string) => (
+      return mainUser?.requests?.map((req : string) => (
         <div key={req} className="p-3 rounded-sm bg-dark-3 flex-row-reverse w-full flex justify-between items-center">
           <div>
             <div className="h-[60px]">

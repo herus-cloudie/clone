@@ -207,7 +207,7 @@ const MeetingTypeList = () => {
         handleClick={sendRequest}
       >
         {friends === 'fetching' ? <Loader /> : (
-          friends.map(({ name, image, id }) => (
+          friends?.map(({ name, image, id }) => (
             <div key={id} className={`grid grid-cols-${friends.length <= 3 ? friends.length : 3} justify-items-center`}>
               <div onClick={() => handleFriendSelect(name)} className={`${invites.includes(name) ? 'bg-green-500 border-green-500' : 'bg-dark-3'} w-28 h-28 rounded-2xl flex flex-col justify-center items-center gap-3 cursor-pointer`}>
                 <div className="img max-w-[60px] max-h-[80px]">
