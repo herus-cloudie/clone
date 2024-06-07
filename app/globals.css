@@ -186,3 +186,15 @@ body{
   background-color: #252a41;
   border: none;
  }
+
+ .video_preview{
+  height: 190px;
+  width: 300px;
+ }
+
+ @media (min-width : 640px) {
+  .video_preview{
+    height: 375px;
+    width: 500px;
+   }
+ }
