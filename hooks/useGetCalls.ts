@@ -61,7 +61,9 @@ export const useGetCalls = () => {
     return false;
   });
 
-  const endedCalls = calls?.filter(({ state: { startsAt, endedAt } }: Call) => (startsAt && new Date(startsAt) < now) || !!endedAt)
-  
+  const endedCalls = calls?.toReversed().filter(({ state: { startsAt, endedAt } }: Call) => (startsAt && new Date(startsAt) < now) || !!endedAt);
+
+
+
   return { endedCalls, upcomingCalls, recordingsCall, isLoading }
 };

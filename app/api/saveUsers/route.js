@@ -30,5 +30,5 @@ export async function GET(){
         return Response.json({message : 'problem at connecting to data base'} , {status : 500})
     }
     const allUser = await AllUsers.find({});
-    return Response.json({allUser} , {status : 200} );
+    return Response.json({allUser , message : 'get users successfully'} , {status : 200} );
 }

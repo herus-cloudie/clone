@@ -1,52 +1,39 @@
 'use client';
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 
-import { Call, useConnectedUser } from "@stream-io/video-react-sdk";
+import { Call } from "@stream-io/video-react-sdk";
 
 import { LongDynamicTime, TimeInIran } from "@/constants/time";
 import { Loader , DynamicBtn } from "@/components/module";
 
 import { useGetCallById } from "@/hooks/useGetCallById";
+import {useGetFriendsAndUsers} from "@/hooks/useGetFriendsAndUsers";
 
 const Inviting = () => {
-  const connectedUser = useConnectedUser();
-  const [idOfInvitedCalls, setIdOfInvitedCalls] = useState<string[] | 'fetching'>('fetching');
-
-  useEffect(() => {
-    async function FetchUsers() {
-      const response = await fetch('/api/meetingReq');
-      const result = await response.json();
-      const mainUserInviteId = result.data?.find(({ user: { name } } : {user : {name : string}}) => name === connectedUser?.name);
-      setIdOfInvitedCalls(mainUserInviteId?.meeting || []);
-    }
-
-    if (connectedUser) FetchUsers();
-  }, [connectedUser]);
+  const {isLoaded , mainUser} = useGetFriendsAndUsers();
 
   return (
     <section className='flex size-full flex-col gap-10'>
       <h1 className='text-3xl font-bold'>دعوت ها</h1>
-      
-        {
-          idOfInvitedCalls === 'fetching' ? <Loader />
-          : <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
-         {
-            idOfInvitedCalls.length === 0 ? <p className="text-xl flex justify-center mt-5">هیچ دعوتی برای دیدار ارسال نشده</p>
-            : <div>
-                {idOfInvitedCalls.toReversed().map(callId => <CallDetails key={callId} callId={callId} />)}
+      {
+        !isLoaded ? <Loader />
+        : <div className='grid grid-cols-1 gap-5 xl:grid-cols-2'>
+            {
+              mainUser?.meeting.length === 0 ? <p className="text-xl flex justify-center mt-5">هیچ دعوتی برای دیدار ارسال نشده</p>
+              : <div>
+                  {mainUser?.meeting.toReversed().map(callId => <CallDetails key={callId} callId={callId} />)}
               </div>
-         }
-          </div>
-        }
-      
+            }
+        </div>
+      }
     </section>
   );
 };
 
 const CallDetails = ({ callId } : {callId : string}) => {
   const { isCallLoaded, call } = useGetCallById(callId);
+
   if (!isCallLoaded) return null;
 
   const ownerMeetingImg = call?.state.createdBy?.image;

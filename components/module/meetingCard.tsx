@@ -7,72 +7,31 @@ import { useRouter } from "next/navigation";
 
 import { LongDynamicTime, TimeInIran } from "@/constants/time";
 
-import { Call, CallRecording, useConnectedUser } from "@stream-io/video-react-sdk";
+import { Call, CallRecording } from "@stream-io/video-react-sdk";
 
-import { useToast } from "../ui/use-toast";
 import { Button } from "../ui/button";
 
-import MeetingModal from "./meetingModal";
-import Loader from "./loader";
 import DynamicBtn from "./dynamicBtn";
 
+import SendMeetingRequest from "./sendMeetingRequest";
+
 const MeetingCard = ({ call, type }: { call: Call | CallRecording, type: 'previous' | 'upcoming' | 'recording' }) => {
-  const [previousCallsInfo, setPreviousCallsInfo] = useState([]);
-  const [friends, setFriends] = useState<'fetching' | any[]>('fetching');
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [invites, setInvites] = useState<string[]>([]);
-  
-  const { toast } = useToast();
   const router = useRouter();
-  const connectedUser = useConnectedUser();
+
+  const [CallsInfo, setCallsInfo] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchPreviousCalls = async () => {
       const response = await fetch('/api/saveCallsMember');
       const { allCall } = await response.json();
-      setPreviousCallsInfo(allCall);
+      setCallsInfo(allCall);
     };
 
     fetchPreviousCalls();
   }, []);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await fetch('/api/saveUsers');
-      const { allUser } = await response.json();
-      const mainUser = allUser?.find((user) => user.user.id === connectedUser?.id);
-      setFriends(mainUser?.friends || []);
-    };
-
-    if (connectedUser) fetchUsers();
-  }, [connectedUser , router]);
-
-  const handleFriendSelect = (name) => {
-    setInvites((prevInvites) =>
-      prevInvites.includes(name) ? prevInvites.filter(invite => invite !== name) : [...prevInvites, name]
-    );
-  };
-
-  const sendRequest = async () => {
-    if (invites.length === 0) {
-      return toast({ title: 'شما کسی را انتخاب نکرده‌اید!', className: 'bg-red-500' });
-    }
-
-    const response = await fetch('/api/meetingReq', {
-      method: 'POST',
-      body: JSON.stringify({ callId: call.id, invites }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    
-    const result = await response.json();
-    if(result.message == "Request sent"){
-      setIsDialogOpen(false)
-      toast({title : `درخواست با موفقیت برای ${invites.map(invite => invite)} ارسال شد` , className : 'bg-green-500'})
-    }
-    else if(result.message == 'Error processing request') toast({title : 'متاسفانه مشکلی پیش آمده! لطفا دوباره تلاش کنید' , className : 'bg-red-500'})
-    };
-
-  const matchData = previousCallsInfo?.find(prevCall => prevCall.callId === call.id)?.users.map(user => user.image);
+  const matchData = CallsInfo?.find(prevCall => prevCall.callId === call.id)?.users.map(user => user.image);
 
   return (
     <div className={`bg-dark-1 rounded-2xl ${type !== 'previous' ? 'sm:h-[258px] h-[290px]' : 'h-[220px]'} max-w-[600px] p-5 flex flex-col justify-between`}>
@@ -116,26 +75,7 @@ const MeetingCard = ({ call, type }: { call: Call | CallRecording, type: 'previo
           <Avatars matchData={matchData} type="previous" />
         )}
       </footer>
-      <MeetingModal
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        title="دعوت دوستان"
-        buttonText="ارسال دعوت"
-        handleClick={sendRequest}
-      >
-        {friends === 'fetching' ? <Loader /> : (
-          friends.map(({ name, image, id }) => (
-            <div key={id} className={`grid grid-cols-${friends.length <= 3 ? friends.length : 3} justify-items-center`}>
-              <div onClick={() => handleFriendSelect(name)} className={`${invites.includes(name) ? 'bg-green-500 border-green-500' : 'bg-dark-3'} w-28 h-28 rounded-2xl flex flex-col justify-center items-center gap-3 cursor-pointer`}>
-                <div className="img max-w-[60px] max-h-[80px]">
-                  <Image alt="profile" width={70} height={70} className="rounded-full object-contain" src={image} />
-                </div>
-                <span>{name}</span>
-              </div>
-            </div>
-          ))
-        )}
-      </MeetingModal>
+      <SendMeetingRequest callId={call.id} isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen}/>
     </div>
   );
 };

@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Call, useConnectedUser, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useUser } from "@clerk/nextjs";
 
 import { Input } from "../ui/input";
@@ -11,40 +11,21 @@ import { Textarea } from "../ui/textarea";
 
 import ReactDatePicker from "react-datepicker";
 
-import { HomeCard , Loader, MeetingModal} from "./index";
+import { HomeCard , MeetingModal} from "./index";
 import { MeetingStateType } from "@/constants/types";
 import { useToast } from "../ui/use-toast";
-import Image from "next/image";
 import { Button } from "../ui/button";
+import SendMeetingRequest from "./sendMeetingRequest";
+import Image from "next/image";
 
 const MeetingTypeList = () => {
   const [meetingState, setMeetingState] = useState<MeetingStateType>();
-  const [callState, setCallState] = useState<Call>();
+  const [callState, setCallState] = useState<Call>(); 
   const [values, setValues] = useState({
     time : new Date(),
     description : '',
     link : ''
   })
-
-  const connectedUser = useConnectedUser();
-  const [allUsers , setAllUsers] = useState<any[]>([]);
-  const [friends , setFriends] = useState<'fetching' | any[]>('fetching');
-  const [invites, setInvites] = useState<string[]>([]);
-  
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      const response = await fetch('/api/saveUsers');
-      const { allUser } = await response.json();
-      setAllUsers(allUser);
-
-      const mainUser = allUser?.find((item : any) => connectedUser?.id === item.user.id);
-      setFriends(mainUser?.friends);
-    };
-
-    if (connectedUser) fetchUsers();
-  }, [connectedUser , meetingState]);
 
   const router = useRouter();
 
@@ -74,39 +55,16 @@ const MeetingTypeList = () => {
       });
 
       setCallState(call)
-      toast({title : 'تماس ایجاد شد', description : 'تنظیمات اولیه رو انجام بدهید' , className : 'bg-dark-3'})
-      if(meetingState == 'isInstantMeeting') router.push(`/meeting/${id}`)
+      
+      if(meetingState == 'isInstantMeeting'){
+        router.push(`/meeting/${id}`)
+        toast({title : 'تماس ایجاد شد', description : 'تنظیمات اولیه رو انجام بدهید' , className : 'bg-dark-3'})
+      } 
 
     } catch (error) {
       toast({title : 'مشکلی پیش اومده!' , description : 'لطفا دوباره تلاش کنید' , className : 'bg-red-500'})
     }
   } 
-
-  const handleFriendSelect = (name : string) => {
-    setMeetingState(undefined)
-    setInvites((prevInvites) =>
-      prevInvites.includes(name) ? prevInvites.filter(invite => invite !== name) : [...prevInvites, name]
-    );
-  };
-    const sendRequest = async () => {
-    if (invites.length === 0) {
-      return toast({ title: 'شما کسی را انتخاب نکرده‌اید!', className: 'bg-red-500' });
-    }
-
-    const response = await fetch('/api/meetingReq', {
-      method: 'POST',
-      body: JSON.stringify({ callId: (callState as Call).id, invites }),
-      headers: { 'Content-Type': 'application/json' },
-    });
-    
-    const result = await response.json();
-    if(result.message == "Request sent"){
-      setIsDialogOpen(false)
-      toast({title : `درخواست با موفقیت برای ${invites.map(invite => invite)} ارسال شد` , className : 'bg-green-500'})
-    }
-    else if(result.message == 'Error processing request') toast({title : 'متاسفانه مشکلی پیش آمده! لطفا دوباره تلاش کنید' , className : 'bg-red-500'})
-  };
-
 
   return (
     <section className='grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4'>
@@ -196,29 +154,16 @@ const MeetingTypeList = () => {
         buttonIcon="/icons/copy.svg"
         image="/icons/checked.svg"
         >
-          <Button onClick={() => setMeetingState('isInviting')} className="bg-dark-4 w-1/2 sm:w-36 xl:w-52">دعوت<img alt="group icon" style={{ filter: 'invert(1)' }} className="mr-1" src='/icons/group.png' width={15} height={15} /></Button>
+          <Button onClick={() => setMeetingState('isInviting')} className="bg-dark-4 w-full">
+            <div className="w-4 h-4 ml-1">
+              <Image alt="group icon" style={{ filter: 'invert(1)' }} className="" src='/icons/group.png' width={512} height={512} />
+            </div>
+            دعوت
+          </Button>
         </MeetingModal>
       }
-      <MeetingModal
-        isOpen={meetingState == 'isInviting'}
-        onClose={() => setMeetingState(undefined)}
-        title="دعوت دوستان"
-        buttonText="ارسال دعوت"
-        handleClick={sendRequest}
-      >
-        {friends === 'fetching' ? <Loader /> : (
-          friends?.map(({ name, image, id }) => (
-            <div key={id} className={`grid grid-cols-${friends.length <= 3 ? friends.length : 3} justify-items-center`}>
-              <div onClick={() => handleFriendSelect(name)} className={`${invites.includes(name) ? 'bg-green-500 border-green-500' : 'bg-dark-3'} w-28 h-28 rounded-2xl flex flex-col justify-center items-center gap-3 cursor-pointer`}>
-                <div className="img max-w-[60px] max-h-[80px]">
-                  <Image alt="profile" width={70} height={70} className="rounded-full object-contain" src={image} />
-                </div>
-                <span>{name}</span>
-              </div>
-            </div>
-          ))
-        )}
-      </MeetingModal>
+
+      <SendMeetingRequest callId={(callState as Call)?.id} isDialogOpen={meetingState == 'isInviting'} setIsDialogOpen={setMeetingState}/>
   </section> 
   
   )
