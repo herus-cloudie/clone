@@ -26,7 +26,7 @@ const FriendsSheet = () => {
 
   const [search , setSearch] = useState<'user not found' | 'empty' | any[]>([]);
   const [activeTab , setActiveTab] = useState<'friends' | 'search' | 'requests'>('friends');
-  const [ifRequestSendedState , setIfRequestSendedState] = useState<boolean>(false);
+  const [ifRequestSendedState , setIfRequestSendedState] = useState<number[]>();
   const [searchValue , setSearchValue] = useState<string>('');
 
   const connectedUser = useConnectedUser();
@@ -34,7 +34,7 @@ const FriendsSheet = () => {
   const { toast } = useToast();
 
   const {isLoaded , friends , users , mainUser} = useGetFriendsAndUsers(activeTab);
-  
+
   const changeHandler = (e : any) => {
     if(!friends) return;
     const targetValue = e.target.value;
@@ -64,16 +64,17 @@ const FriendsSheet = () => {
       body : JSON.stringify({origin : connectedUser , destination : user}),
       headers : {'Content-Type': 'application/json'}
     })
-    setIfRequestSendedState(true)
+   
+    setIfRequestSendedState((prev) => [prev , user.id])
   }
   
   const acceptOrRejectReq = async (respond : 'accept' | 'reject' , sender : string) => {
-    const sendRespond = await fetch('/api/friendReq' , {
+    const sendReq = await fetch('/api/friendReq' , {
       method : 'PATCH',
       body : JSON.stringify({sender , receiver : connectedUser?.name , respond}),
       headers : {'Content-Type': 'application/json'}
     })
-    
+   
     if (mainUser) mainUser.requests = mainUser.requests.filter(req => req !== sender);
     setSearch([]);
     router.refresh();
@@ -161,13 +162,13 @@ const FriendsSheet = () => {
                           </div>
                           {
                             search && search != 'user not found' && search != 'empty' && search?.length != 0 ?
-                              search?.map(({user, requests}) => {
+                              search?.slice(0 , 4).map(({user, requests}) => {
                                 const {name , id , image} = user;
                                 let ifRequestSended = requests?.find((name : string) => name == connectedUser?.name)
                                 const ifDestinationUserSendedReqAlready = mainUser?.requests?.find((req : string) => req == name)
 
                                 return (
-                                  <div key={id} className="p-3 rounded-sm bg-dark-3 flex-row-reverse w-full flex justify-between items-center">
+                                  <div key={id} className="p-3 rounded-sm mt-5 bg-dark-3 flex-row-reverse w-full flex justify-between items-center">
                                     <div>
                                       <div className="h-[60px]">
                                         <Image  width={512} height={512} alt="profile" src={image} className="rounded-full object-cover w-full h-4/5 relative -top-5 -left-5"/>
@@ -175,7 +176,7 @@ const FriendsSheet = () => {
                                       <p className="text-xl -mt-5">{name}</p>
                                     </div>
                                     {
-                                      ifRequestSended || ifRequestSendedState ?
+                                      ifRequestSendedState?.find(id => id == user.id) || ifRequestSended ?
                                         <div key={id} className="flex items-end">
                                             <span className="text-sm ml-2 text-sky-1">ارسال شده</span>
                                             <Image alt="waiting png  pb-2" style={{filter : 'invert(1)'}} width={20} height={20} src={'/icons/wall-clock.png'}/>
@@ -185,10 +186,7 @@ const FriendsSheet = () => {
                                             <div onClick={() => acceptOrRejectReq('accept' , name)} style={{filter : 'invert(1)'}} className="flex-center bg-[#E244EF] cursor-pointer size-10 rounded-[10px]"><Image alt="add friend" width="22" height="22" src="/icons/check-mark.png" style={{color : "transparent"}}/></div>
                                             <div onClick={() => acceptOrRejectReq('reject' , name)} style={{filter : 'invert(1)'}} className="flex-center bg-[#6CFFC8] cursor-pointer size-10 rounded-[10px]"><Image alt="add friend" width="20" height="20" src="/icons/cancel.png" style={{color : "transparent"}}/></div>  
                                         </div>
-                                      : <div onClick={() => {
-                                        sendRequestFriend(user)
-                                        ifRequestSended = true
-                                      }} className="flex-center bg-green-500 cursor-pointer size-12 rounded-[10px]"><Image alt="add friend" width="27" height="27" src="/icons/add-meeting.svg" style={{color : "transparent"}}/></div>
+                                      : <div onClick={() => sendRequestFriend(user)} className="flex-center bg-green-500 cursor-pointer size-12 rounded-[10px]"><Image alt="add friend" width="27" height="27" src="/icons/add-meeting.svg" style={{color : "transparent"}}/></div>
                                     }
                                     </div>
                                 )
