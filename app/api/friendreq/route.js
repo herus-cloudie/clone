@@ -1,57 +1,70 @@
 import ConnectDataBase from "../../../utils/connectDataBase";
-import {AllUsers} from '@/utils/model'
+import { AllUsers } from '@/utils/model';
 
 export async function POST(req) {
-    const {origin , destination} = await req.json();
+    const { origin, destination } = await req.json();
 
     try {
-        await ConnectDataBase()
+        await ConnectDataBase();
     } catch (error) {
-        console.log(error);
-        return Response.json({message : 'problem at connecting to data base'} , {status : 500})
+        console.error('Database connection error:', error);
+        return new Response(JSON.stringify({ message: 'Problem at connecting to database' }), { status: 500 });
     }
 
-    const destinationUser = await AllUsers.findOne({'user.id' : destination.id});
+    const destinationUser = await AllUsers.findOne({ 'user.id': destination.id });
+    if (!destinationUser) {
+        return new Response(JSON.stringify({ message: 'Destination user not found' }), { status: 404 });
+    }
 
-    const existRequest = destinationUser.requests?.find(requestOwner => requestOwner == origin.name);
+    const existRequest = destinationUser.requests?.includes(origin.name);
 
-    if(!existRequest) {
-        destinationUser.requests.push(origin.name)
-        destinationUser.save();
-        return Response.json({message : 'request send'} , {status : 200});
-
-    }else return Response.json({message : 'request have already sended'} , {status : 200});
+    if (!existRequest) {
+        destinationUser.requests = destinationUser.requests || [];
+        destinationUser.requests.push(origin.name);
+        await destinationUser.save();
+        return new Response(JSON.stringify({ message: 'Request sent' }), { status: 200 });
+    } else {
+        return new Response(JSON.stringify({ message: 'Request has already been sent' }), { status: 200 });
+    }
 }
 
 export async function PATCH(req) {
-    const {respond , sender , receiver} = await req.json();
+    const { respond, sender, receiver } = await req.json();
 
     try {
-        await ConnectDataBase()
+        await ConnectDataBase();
     } catch (error) {
-        console.log(error);
-        return Response.json({message : 'problem at connecting to data base'} , {status : 500})
+        console.error('Database connection error:', error);
+        return new Response(JSON.stringify({ message: 'Problem at connecting to database' }), { status: 500 });
     }
 
-    const Sender = await AllUsers.findOne({'user.name' : sender});
-    const Receiver = await AllUsers.findOne({'user.name' : receiver});
+    const Sender = await AllUsers.findOne({ 'user.name': sender });
+    const Receiver = await AllUsers.findOne({ 'user.name': receiver });
 
-    if(respond == 'accept'){
+    if (!Sender || !Receiver) {
+        return new Response(JSON.stringify({ message: 'Sender or Receiver not found' }), { status: 404 });
+    }
+
+    if (respond === 'accept') {
+        Receiver.friends = Receiver.friends || [];
+        Receiver.requests = Receiver.requests || [];
+        Sender.friends = Sender.friends || [];
+
         Receiver.friends.push(Sender.user);
-        Receiver.requests.pop(sender);
+        Receiver.requests = Receiver.requests.filter(request => request !== sender);
 
         Sender.friends.push(Receiver.user);
 
-        Sender.save();
-        Receiver.save();
+        await Sender.save();
+        await Receiver.save();
 
-        return Response.json({message : 'accepted'} , {status : 200});
+        return new Response(JSON.stringify({ message: 'Accepted' }), { status: 200 });
+    } else if (respond === 'reject') {
+        Receiver.requests = Receiver.requests.filter(request => request !== sender);
+        await Receiver.save();
 
-    } else if(respond == 'reject'){ 
-        Receiver.requests.pop(sender);
-        Receiver.save();
-
-        return Response.json({message : 'rejected'} , {status : 200});
+        return new Response(JSON.stringify({ message: 'Rejected' }), { status: 200 });
+    } else {
+        return new Response(JSON.stringify({ message: 'Invalid respond value' }), { status: 400 });
     }
-    
 }
